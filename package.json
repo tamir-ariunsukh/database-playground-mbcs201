@@ -1,0 +1,46 @@
+{
+  "name": "database-playground-mbcs201",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser-only database playground for MBCS201 — PostgreSQL, MySQL, MongoDB side by side",
+  "sideEffects": [
+    "src/lib/engines/mingo.ts",
+    "src/app/globals.css"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-sql": "^6.8.0",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.13",
+    "@electric-sql/pglite": "^0.2.17",
+    "@tanstack/react-table": "^8.20.6",
+    "@uiw/react-codemirror": "^4.23.7",
+    "alasql": "^4.6.6",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.469.0",
+    "mingo": "^6.5.1",
+    "next": "16.3.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "seedrandom": "^3.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "@types/seedrandom": "^3.0.8",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}
