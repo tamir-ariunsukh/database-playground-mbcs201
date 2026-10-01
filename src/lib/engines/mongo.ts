@@ -55,7 +55,7 @@ export async function runMongo(
 
   const verdict = guardMongo(input)
   if (!verdict.allowed) {
-    throw new QueryError(verdict.reason ?? 'Query зөвшөөрөгдөхгүй.', 'mongodb', {
+    throw new QueryError(verdict.reason ?? 'Асуулга зөвшөөрөгдөхгүй.', 'mongodb', {
       hint: verdict.suggestion,
     })
   }
@@ -180,7 +180,7 @@ export async function runMongo(
     }
   } catch (err) {
     if (err instanceof QueryError) throw err
-    throw new QueryError(`MongoDB query алдаа: ${(err as Error).message}`, 'mongodb', {
+    throw new QueryError(`MongoDB асуулгын алдаа: ${(err as Error).message}`, 'mongodb', {
       hint: 'Синтакс шалгаарай. Жишээ: db.books.find({ price: { $gt: 30000 } })',
     })
   }
@@ -217,7 +217,7 @@ export function parseMongoQuery(input: string): MongoParsed | MongoParseError {
   if (!head) {
     return {
       ok: false,
-      error: 'Query нь db.collection.method(...) хэлбэртэй байх ёстой.',
+      error: 'Асуулга нь db.collection.method(...) хэлбэртэй байх ёстой.',
       hint: 'Жишээ: db.books.find({ price: { $gt: 30000 } }).sort({ price: -1 }).limit(10)',
     }
   }
@@ -344,7 +344,7 @@ function normalizeValue(v: unknown): CellValue {
 /**
  * PGlite-ээс бүх хүснэгтийг уншиж MongoDB collection болгоно.
  * Ингэснээр нэг domain-ийг 3 системд зэрэгцүүлэн харуулж болно —
- * ижил дата, өөр query хэл.
+ * ижил өгөгдөл, өөр асуулгын хэл.
  *
  * ⚠️ ЧУХАЛ: PostgreSQL-ийн `NUMERIC` нь JS-д string болж ирдэг.
  * Хэрэв түүнийг шууд хадгалбал mingo-гийн `$avg`, `$sum` нь

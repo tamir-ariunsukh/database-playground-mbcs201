@@ -1,16 +1,20 @@
 import type { DbKind, GuardVerdict } from './types'
 
 /**
- * Query Guard — хүүхдийн бичсэн query-г engine рүү явуулахаас өмнө шалгана.
+ * Асуулгын хамгаалалт (Query Guard) — оюутны бичсэн асуулгыг engine
+ * рүү явуулахаас өмнө шалгана.
  *
  * Энэ нь аюулгүй байдлын ЦОРЫН ГАНЦ давхарга БИШ. Жинхэнэ хамгаалалт нь:
- *   1. Query нь зөвхөн `mem:` (in-memory) дотор ажиллана — файл системд хүрэхгүй.
- *   2. PGlite нь browser-ийн WebAssembly sandbox дотор — OS-д хүрэх боломжгүй.
- *   3. Server огт байхгүй — халдах зүйл байхгүй.
+ *   1. Асуулга нь зөвхөн `mem:` (in-memory) дотор ажиллана — файл системд
+ *      хүрэхгүй.
+ *   2. PGlite нь browser-ийн WebAssembly sandbox дотор — OS-д хүрэх
+ *      боломжгүй.
+ *   3. Сервер огт байхгүй — халдах зүйл байхгүй.
  *
  * Гэхдээ guard нь:
- *   - Ойлгомжтой монгол алдаа өгнө (хүүхэд юу буруу бичсэнээ мэдэнэ)
- *   - Суралцахад хор хөнөөлтэй тушаалуудыг (DROP DATABASE, COPY FROM PROGRAM) сэргийлнэ
+ *   - Ойлгомжтой монгол алдаа өгнө (оюутан юу буруу бичсэнээ мэдэнэ)
+ *   - Суралцахад хор хөнөөлтэй тушаалуудыг (DROP DATABASE, COPY FROM
+ *     PROGRAM) сэргийлнэ
  *   - Хичээлийн явцад хүснэгт устгагдахаас хамгаална
  */
 
@@ -248,15 +252,15 @@ export function stripLiteralsAndComments(sql: string): string {
   return out
 }
 
-/** SQL query-г шалгана. */
+/** SQL асуулгыг шалгана. */
 export function guardSql(sql: string): GuardVerdict {
   const trimmed = sql.trim()
 
   if (!trimmed) {
     return {
       allowed: false,
-      reason: 'Query хоосон байна.',
-      suggestion: 'SELECT * FROM books; гэх мэт query бичээрэй.',
+      reason: 'Асуулга хоосон байна.',
+      suggestion: 'SELECT * FROM books; гэх мэт асуулга бичээрэй.',
     }
   }
 
@@ -265,8 +269,8 @@ export function guardSql(sql: string): GuardVerdict {
   if (statements.length === 0) {
     return {
       allowed: false,
-      reason: 'Query-д гүйцэтгэх statement байхгүй.',
-      suggestion: 'SELECT * FROM books; гэх мэт query бичээрэй.',
+      reason: 'Асуулгад гүйцэтгэх statement байхгүй.',
+      suggestion: 'SELECT * FROM books; гэх мэт асуулга бичээрэй.',
     }
   }
 
@@ -335,8 +339,8 @@ export function guardMongo(input: string): GuardVerdict {
   if (!trimmed) {
     return {
       allowed: false,
-      reason: 'Query хоосон байна.',
-      suggestion: 'db.books.find({ year: { $gt: 2000 } }) гэх мэт query бичээрэй.',
+      reason: 'Асуулга хоосон байна.',
+      suggestion: 'db.books.find({ year: { $gt: 2000 } }) гэх мэт асуулга бичээрэй.',
     }
   }
 
@@ -379,7 +383,7 @@ export function needsLimit(sql: string, defaultLimit = 500): boolean {
   return !/\blimit\s+\d+/i.test(stripped)
 }
 
-/** SELECT query-д LIMIT нэмнэ (хэрэв байхгүй бол). */
+/** SELECT асуулгад LIMIT нэмнэ (хэрэв байхгүй бол). */
 export function applyLimit(sql: string, limit = 500): string {
   // Төгсгөлийн `;` болон хоосон мөрүүдийг хасна.
   const trimmed = sql.trim().replace(/;\s*$/, '').trimEnd()

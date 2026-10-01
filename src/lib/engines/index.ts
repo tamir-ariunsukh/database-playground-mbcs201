@@ -19,15 +19,15 @@ import { extractPGliteToMongo, runMongo, setMongoCollections, type MongoCollecti
  *
  * Архитектур:
  *   1. Domain-ийг сонгоход PostgreSQL (PGlite) дээр DDL + seed ажиллуулна.
- *   2. Тэр датаг автоматаар MySQL (alasql) болон MongoDB (mingo) руу хуулна.
- *      → 3 системд ЯГ ИЖИЛ дата байна.
+ *   2. Тэр өгөгдлийг автоматаар MySQL (alasql) болон MongoDB (mingo) руу хуулна.
+ *      → 3 системд ЯГ ИЖИЛ өгөгдөл байна.
  *   3. Хэрэглэгч аль системийг сонгож query бичнэ.
  *   4. Reset дарахад бүгд анхны байдалд буцна.
  *
  * Яагаад Postgres нь "эх сурвалж" вэ:
- *   PGlite нь жинхэнэ PostgreSQL тул DDL, constraint, serial,
- *   default утгуудыг зөв боловсруулна. Түүнээс датаг хуулбал
- *   бусад системд ч зөв, бодит дата очно.
+ *   PGlite нь жинхэнэ PostgreSQL тул DDL, хязгаар, serial,
+ *   default утгуудыг зөв боловсруулна. Түүнээс өгөгдлийг хуулбал
+ *   бусад системд ч зөв, бодит өгөгдөл очно.
  */
 
 export interface EngineStatus {
@@ -89,12 +89,12 @@ async function doLoadDomain(domainId: string): Promise<DatabaseSnapshot> {
   // 2. Schema мета өгөгдөл уншина
   const tables = await getPostgresSchema()
 
-  // 3. Мөрийн датаг авч MongoDB-д хуулна
+  // 3. Мөрийн өгөгдлийг авч MongoDB-д хуулна
   const tableNames = tables.map((t) => t.name)
   mongoStore = await extractPGliteToMongo(await getPGlite(), tableNames)
   setMongoCollections(mongoStore)
 
-  // 4. MySQL (alasql) — ижил дата
+  // 4. MySQL (alasql) — ижил өгөгдөл
   await clearAlasql()
   for (const table of tables) {
     const rows = mongoStore[table.name] ?? []
@@ -124,7 +124,7 @@ export function getSnapshot(): DatabaseSnapshot | null {
 }
 
 /**
- * Schema-гийн мета өгөгдлийг ДАТА УСТГАЛГҮЙГЭЭР дахин уншина.
+ * Schema-гийн мета өгөгдлийг ӨГӨГДӨЛ УСТГАЛГҮЙГЭЭР дахин уншина.
  *
  * `loadDomain`-ээс ялгаатай нь энэ нь DDL/seed-ийг дахин
  * ажиллуулахгүй — зөвхөн хүснэгтүүдийн одоогийн байдал (мөрийн тоо,
@@ -133,7 +133,7 @@ export function getSnapshot(): DatabaseSnapshot | null {
 export async function getTableMeta(): Promise<TableMeta[]> {
   const tables = await getPostgresSchema()
 
-  // MySQL болон MongoDB-ийн collection-уудыг В Postgres-ийн датагаар
+  // MySQL болон MongoDB-ийн collection-уудыг PostgreSQL-ийн өгөгдлөөр
   // шинэчилнэ — ингэснээр 3 систем үргэлж нийцнэ.
   const tableNames = tables.map((t) => t.name)
   mongoStore = await extractPGliteToMongo(await getPGlite(), tableNames)
@@ -217,7 +217,7 @@ export async function executeScript(sql: string): Promise<void> {
   await runPostgresScript(sql)
 }
 
-/** Domain-ийн жишээ query-г тухайн engine-д тохируулж буцаана. */
+/** Domain-ийн жишээ асуулгыг тухайн engine-д тохируулж буцаана. */
 export function exampleFor(
   example: { sql: string; mongo?: string },
   dbKind: DbKind,

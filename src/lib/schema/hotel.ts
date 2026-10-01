@@ -5,7 +5,7 @@ import type { DomainDefinition } from './types'
  * Hotel — зочид буудлын захиалгын систем.
  *
  * Гол онцлог: rooms нь room_types-аас хамаарна (1:N), bookings нь
- * guests ↔ rooms хоёрыг холбоно. Мөн CHECK constraint-аар
+ * guests ↔ rooms хоёрыг холбоно. Мөн CHECK хязгаараар
  * checkout_date > checkin_date баталгаажуулна — огнооны логик.
  */
 
@@ -82,7 +82,7 @@ function generateSeed(): string {
             : 'FALSE'
           : `'${String(s).replace(/'/g, "''")}'`
 
-  const out: string[] = ['-- Hotel жишээ дата (seed: hotel-v1)']
+  const out: string[] = ['-- Зочид буудлын жишээ өгөгдөл (seed: hotel-v1)']
 
   const roomTypes: [string, number, number, string][] = [
     ['Стандарт', 120000, 2, 'Энгийн өрөө, 2 хүн'],
@@ -228,7 +228,7 @@ export const hotelDomain: DomainDefinition = {
   label: 'Зочид буудал',
   weeks: [2, 3, 4, 5, 6, 7, 9, 10, 12, 13],
   description:
-    'Зочид буудлын захиалга: өрөө, зочин, захиалга, төлбөр. Огнооны логик, CHECK constraint, транзакц үзэхэд тохиромжтой.',
+    'Зочид буудлын захиалга: өрөө, зочин, захиалга, төлбөр. Огнооны логик, CHECK хязгаар, транзакц үзэхэд тохиромжтой.',
   ddl: DDL,
   seed: generateSeed(),
   examples: [
@@ -255,7 +255,7 @@ LIMIT 20;`,
 FROM bookings
 WHERE status IN ('Дууссан', 'Ирсэн');`,
       explanation:
-        'Таван aggregate нэг query-д. `IN (\'Дууссан\', \'Ирсэн\')` нь зөвхөн бодит орлого авчирсан захиалгыг тоолно — цуцлагдсаныг хасах нь чухал.',
+        'Таван нэгтгэх функц нэг асуулгад. `IN (\'Дууссан\', \'Ирсэн\')` нь зөвхөн бодит орлого авчирсан захиалгыг тоолно — цуцлагдсаныг хасах нь чухал.',
     },
     {
       title: 'Хамгийн их орлого авчирсан өрөөний төрөл',
@@ -337,7 +337,7 @@ JOIN guests g ON b.guest_id = g.guest_id
 WHERE b.nights = (SELECT MAX(nights) FROM bookings WHERE status IN ('Дууссан', 'Ирсэн'))
 ORDER BY b.total_price DESC;`,
       explanation:
-        'Scalar subquery нэг утга буцаана. Хэд хэдэн захиалга ижил `nights`-тай байж болзошгүй тул ORDER BY-г нэмсэн.',
+        'Скаляр дэд асуулга нэг утга буцаана. Хэд хэдэн захиалга ижил `nights`-тай байж болзошгүй тул ORDER BY-г нэмсэн.',
     },
     {
       title: 'Төлбөрийн аргын тархалт',
@@ -354,7 +354,7 @@ ORDER BY total DESC;`,
         '`COUNT(*) FILTER (WHERE is_refunded)` — буцаагдсан төлбөрийн тоо. Энэ нь `boolean` баганад `FILTER` хэрэглэх цэвэр арга (өөрөөр `WHERE` гэж бичих болно).',
     },
     {
-      title: 'Дундажаас урт буусан захиалга (subquery)',
+      title: 'Дундажаас урт буусан захиалга (дэд асуулга)',
       week: 10,
       sql: `SELECT b.booking_id, g.last_name, b.nights, b.total_price
 FROM bookings b
@@ -364,7 +364,7 @@ WHERE b.nights > (SELECT AVG(nights) FROM bookings)
 ORDER BY b.nights DESC, b.total_price DESC
 LIMIT 20;`,
       explanation:
-        'Subquery нь бүх захиалгын дундаж хоногийг бодно. Гадаад query дараа нь түүнээс урт захиалгыг л авна.',
+        'Дэд асуулга нь бүх захиалгын дундаж хоногийг бодно. Гадаад асуулга дараа нь түүнээс урт захиалгыг л авна.',
     },
     {
       title: 'Өрөөний ачаалалт (occupancy)',
@@ -410,7 +410,7 @@ ORDER BY balance DESC;`,
         'VIEW дотор JOIN + GROUP BY + FILTER + COALESCE — бүгд нэг дор. `COALESCE(..., 0)` нь төлбөргүй захиалганд 0 гаргана (SUM нь NULL буцаадаг).',
     },
     {
-      title: 'Transaction — захиалга үүсгэх',
+      title: 'Транзакц — захиалга үүсгэх',
       week: 13,
       category: 'transaction',
       mutates: true,
@@ -430,10 +430,10 @@ UPDATE rooms SET status = 'Зассан' WHERE room_id = 12;
 
 COMMIT;`,
       explanation:
-        'Захиалга үүсгэх нь 3 үйлдэл. ACID-ийн Atomicity — хэрэв төлбөр бүртгэгдэхгүй бол захиалга ч үлдэхгүй. `RETURNING booking_id` нь Postgres-ийн маш хэрэгтэй боломж — шинэ ID-г шууд авна.',
+        'Захиалга үүсгэх нь 3 үйлдэл. ACID-ийн Atomicity — хэрэв төлбөр бүртгэгдэхгүй бол захиалга ч үлдэхгүй. `RETURNING booking_id` нь PostgreSQL-ийн маш хэрэгтэй боломж — шинэ ID-г шууд авна.',
     },
     {
-      title: 'CHECK constraint — буруу огноо',
+      title: 'CHECK хязгаар — буруу огноо',
       week: 4,
       category: 'ddl',
       mutates: true,
@@ -441,7 +441,7 @@ COMMIT;`,
 INSERT INTO bookings (guest_id, room_id, checkin_date, checkout_date, nights, guests_count, total_price)
 VALUES (1, 1, '2025-11-10', '2025-11-05', 2, 2, 240000);`,
       explanation:
-        '`CHECK (checkout_date > checkin_date)` нь огнооны логикийг DBMS түвшинд баталгаажуулна. Мөн `nights > 0` — хоёр constraint хамт DATЭ-ийн утга учиртай байдлыг хамгаална.',
+        '`CHECK (checkout_date > checkin_date)` нь огнооны логикийг DBMS түвшинд баталгаажуулна. Мөн `nights > 0` — хоёр хязгаар хамт өгөгдлийн утга учиртай байдлыг хамгаална.',
     },
     {
       title: 'Төлбөр бүрэн төлөгдсөн эсэх шалгалт',
@@ -457,7 +457,7 @@ HAVING b.total_price <> COALESCE(SUM(p.amount) FILTER (WHERE NOT p.is_refunded),
 ORDER BY balance DESC
 LIMIT 20;`,
       explanation:
-        'Денормализаци хийсэн `total_price` ба payments-ийн нийлбэр таарахгүй захиалгуудыг олно. `<>` нь "тэнцүү биш". Ийм query нь санхүүгийн аудитад өдөр бүр ажилладаг.',
+        'Денормализаци хийсэн `total_price` ба payments-ийн нийлбэр таарахгүй захиалгуудыг олно. `<>` нь "тэнцүү биш". Ийм асуулга нь санхүүгийн аудитад өдөр бүр ажилладаг.',
     },
   ],
   challenges: [

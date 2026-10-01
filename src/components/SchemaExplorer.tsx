@@ -19,11 +19,11 @@ import type { ColumnMeta, DbKind } from '@/lib/types'
  * SchemaExplorer — зүүн талын самбар.
  *
  * Харуулна:
- *   - Domain сонголт (5 mini project сэдэв)
- *   - Database сонголт (Postgres / MySQL / MongoDB)
+ *   - Төслийн сэдэв (5 mini project сэдэв)
+ *   - Өгөгдлийн сан (PostgreSQL / MySQL / MongoDB)
  *   - Хүснэгтүүдийн жагсаалт, багана, төрөл, PRIMARY/FOREIGN KEY
  *   - Мөрийн тоо
- *   - Хүснэгт дээр дарахад `SELECT * FROM ...` автоматаар editor-т очно
+ *   - Хүснэгт дээр дарахад `SELECT * FROM ...` автоматаар редакторт очно
  */
 
 interface Props {
@@ -71,7 +71,7 @@ export function SchemaExplorer({ onInsertQuery }: Props) {
       {/* Database сонголт */}
       <DbSwitcher />
 
-      {/* Хүснэгтүүд */}
+      {/* Схем хайгч */}
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="flex items-center justify-between px-3 py-2">
           <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--text-dim)]">
@@ -118,13 +118,13 @@ export function SchemaExplorer({ onInsertQuery }: Props) {
           onClick={handleReset}
           disabled={loading || resetting}
           className="flex w-full items-center justify-center gap-2 rounded border border-[var(--border)] px-3 py-2 text-xs text-[var(--text-dim)] transition hover:bg-white/5 hover:text-[var(--text)] disabled:opacity-50"
-          title="Бүх датаг анхны байдалд буцаана"
+          title="Бүх өгөгдлийг анхны байдалд буцаана"
         >
           {resetting ? <Loader2 size={13} className="animate-spin" /> : <RotateCcw size={13} />}
-          Дата сэргээх
+          Өгөгдөл сэргээх
         </button>
         <p className="mt-2 text-[10px] leading-relaxed text-[var(--text-dim)]/70">
-          Query-ээр дата устгасан ч энэ товчоор анхны байдалд буцаана.
+          Асуулгаар мөр устгасан ч энэ товчоор анхны байдалд буцаана.
         </p>
       </div>
 
@@ -138,14 +138,29 @@ export function SchemaExplorer({ onInsertQuery }: Props) {
   )
 }
 
-/** Database солих товчнууд. */
+/** Өгөгдлийн сан солих товчнууд. */
 function DbSwitcher() {
   const { dbKind, selectDb, domain } = useDb()
 
   const dbs: { kind: DbKind; label: string; color: string; note: string }[] = [
-    { kind: 'postgres', label: 'PostgreSQL', color: '#336791', note: 'Жинхэнэ Postgres 17 (WASM)' },
-    { kind: 'mysql', label: 'MySQL', color: '#00758f', note: 'MySQL-нийцэлтэй (alasql)' },
-    { kind: 'mongodb', label: 'MongoDB', color: '#4db33d', note: 'Document store (mingo)' },
+    {
+      kind: 'postgres',
+      label: 'PostgreSQL',
+      color: '#336791',
+      note: 'Жинхэнэ PostgreSQL 17 (WebAssembly)',
+    },
+    {
+      kind: 'mysql',
+      label: 'MySQL',
+      color: '#00758f',
+      note: 'MySQL-нийцэлтэй (alasql engine)',
+    },
+    {
+      kind: 'mongodb',
+      label: 'MongoDB',
+      color: '#4db33d',
+      note: 'Баримт бичгийн сан (mingo engine)',
+    },
   ]
 
   return (
@@ -173,8 +188,8 @@ function DbSwitcher() {
         ))}
       </div>
       <p className="mt-2 text-[10px] leading-relaxed text-[var(--text-dim)]/80">
-        <span className="font-medium text-[var(--text-dim)]">{domain.label}</span> — ижил дата,
-        3 өөр query хэл.
+        <span className="font-medium text-[var(--text-dim)]">{domain.label}</span> — ижил
+        өгөгдөл, 3 өөр асуулгын хэл.
       </p>
     </div>
   )

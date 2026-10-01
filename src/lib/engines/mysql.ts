@@ -14,7 +14,7 @@ import { QueryError } from '../types'
  *
  * Хязгаарлалт: жинхэнэ MySQL биш. `EXPLAIN`, transaction,
  * stored procedure бүрэн дэмжигдэхгүй. Хичээлийн зорилгоор бол хангалттай —
- * SELECT, JOIN, GROUP BY, HAVING, subquery бүгд ажиллана.
+ * SELECT, JOIN, GROUP BY, HAVING, дэд асуулга бүгд ажиллана.
  */
 
 interface AlasqlDatabase {
@@ -169,7 +169,7 @@ export async function runMysql(
 
   const verdict = guardSql(sql)
   if (!verdict.allowed) {
-    throw new QueryError(verdict.reason ?? 'Query зөвшөөрөгдөхгүй.', 'mysql', {
+    throw new QueryError(verdict.reason ?? 'Асуулга зөвшөөрөгдөхгүй.', 'mysql', {
       hint: verdict.suggestion,
     })
   }
@@ -200,7 +200,7 @@ export async function runMysql(
   const statements = splitStatements(sql)
 
   if (statements.length === 0) {
-    throw new QueryError('Query-д гүйцэтгэх statement байхгүй.', 'mysql')
+    throw new QueryError('Асуулгад гүйцэтгэх statement байхгүй.', 'mysql')
   }
 
   const start = performance.now()
@@ -319,16 +319,18 @@ function normalizeValue(v: unknown): CellValue {
 
 function describeStatement(sql: string, affected?: number): string | undefined {
   const s = sql.trim().toLowerCase()
-  if (s.startsWith('insert')) return `INSERT — ${affected ?? '?'} мөр нэмэгдлээ.`
-  if (s.startsWith('update')) return `UPDATE — ${affected ?? '?'} мөр өөрчлөгдлөө.`
-  if (s.startsWith('delete')) return `DELETE — ${affected ?? '?'} мөр устлаа.`
+  if (s.startsWith('insert')) return `${affected ?? '?'} мөр нэмэгдлээ.`
+  if (s.startsWith('update')) return `${affected ?? '?'} мөр өөрчлөгдлөө.`
+  if (s.startsWith('delete')) return `${affected ?? '?'} мөр устлаа.`
+  if (s.startsWith('create table')) return 'Хүснэгт үүслээ.'
+  if (s.startsWith('drop')) return 'Объект устлаа.'
   return undefined
 }
 
 function toMysqlError(err: unknown): QueryError {
   const msg = (err as Error).message ?? String(err)
   const hint = /unknown table|not exist/i.test(msg)
-    ? 'Хүснэгтийн нэр зөв эсэхийг шалгаарай. Schema tab-аас харна уу.'
+    ? 'Хүснэгтийн нэр зөв эсэхийг шалгаарай. Зүүн самбараас харна уу.'
     : /parse error|unexpected|syntax/i.test(msg)
       ? 'SQL синтакс алдаа. alasql нь MySQL-ийн бүх синтаксийг дэмжихгүй — LIMIT, backtick, IFNULL() ажиллана.'
       : undefined

@@ -24,8 +24,8 @@ export default function HomePage() {
           Database Playground
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--text-dim)]">
-          Гурван өгөгдлийн сангийн query-г browser дотор шууд ажиллуулж үзэх интерактив
-          орчин. Сервер байхгүй — бүх зүйл таны компьютер дээр ажиллана.
+          Гурван өгөгдлийн сангийн асуулгыг browser дотор шууд ажиллуулж үзэх
+          интерактив орчин. Сервер байхгүй — бүх зүйл таны компьютер дээр ажиллана.
         </p>
 
         <Link
@@ -49,7 +49,7 @@ export default function HomePage() {
             points={[
               'WebAssembly-д компиляцлагдсан',
               'SELECT version() → жинхэнэ хувилбар',
-              'Transaction, EXPLAIN ANALYZE ажиллана',
+              'Транзакц, EXPLAIN ANALYZE ажиллана',
             ]}
           />
           <DbCard
@@ -64,11 +64,11 @@ export default function HomePage() {
           />
           <DbCard
             title="MongoDB"
-            subtitle="Document store"
+            subtitle="Баримт бичгийн сан"
             color="#4db33d"
             points={[
-              'mingo query engine',
-              '$gt, $in, $regex operator',
+              'mingo engine',
+              '$gt, $in, $regex операторууд',
               '$group, $lookup pipeline',
             ]}
           />
@@ -81,11 +81,11 @@ export default function HomePage() {
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {[
-            ['Номын сан', 'Ном, зохиолч, гишүүн, зээл', 'bibliothèc'],
-            ['Цахим дэлгүүр', 'Бүтээгдэхүүн, захиалга, төлбөр', 'shop'],
-            ['Эмнэлэг', 'Эмч, өвчтөн, цаг товлолт, жор', 'hospital'],
-            ['Их сургууль', 'Оюутан, хичээл, багш, бүртгэл', 'university'],
-            ['Зочид буудал', 'Өрөө, зочин, захиалга, төлбөр', 'hotel'],
+            ['Номын сан', 'Ном, зохиолч, гишүүн, зээл'],
+            ['Цахим дэлгүүр', 'Бүтээгдэхүүн, захиалга, төлбөр'],
+            ['Эмнэлэг', 'Эмч, өвчтөн, цаг товлолт, жор'],
+            ['Их сургууль', 'Оюутан, хичээл, багш, бүртгэл'],
+            ['Зочид буудал', 'Өрөө, зочин, захиалга, төлбөр'],
           ].map(([title, desc]) => (
             <div
               key={title}
@@ -110,16 +110,16 @@ export default function HomePage() {
             'SELECT / WHERE',
             'ORDER BY',
             'CRUD',
-            'NULL',
-            'Aggregate',
+            'NULL утга',
+            'Нэгтгэх функц',
             'GROUP BY / HAVING',
             'JOIN',
-            'Subquery',
+            'Дэд асуулга',
             'EXISTS / IN',
-            'Normalization',
-            'View / Index',
-            'Transaction / ACID',
-            'Security',
+            'Нормалчлал',
+            'VIEW / INDEX',
+            'Транзакц / ACID',
+            'Аюулгүй байдал',
           ].map((t) => (
             <span
               key={t}
@@ -133,11 +133,11 @@ export default function HomePage() {
         <div className="mt-8 flex items-start gap-3 rounded border border-[var(--border)] bg-[var(--bg-alt)] p-4">
           <Layers size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
           <div>
-            <h3 className="text-sm font-medium text-[var(--text)]">Нэг дата, гурван хэл</h3>
+            <h3 className="text-sm font-medium text-[var(--text)]">Нэг өгөгдөл, гурван хэл</h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[var(--text-dim)]">
-              Сэдэв солиход ижил өгөгдөл гурван системд зэрэг бэлдэгдэнэ. Нэг query-г
-              PostgreSQL-д бичээд, дараа нь MongoDB-д хэрхэн хийхийг шууд харьцуулж
-              болно.
+              Сэдэв солиход ижил өгөгдөл гурван системд зэрэг бэлдэгдэнэ. Нэг
+              асуулгыг PostgreSQL-д бичээд, дараа нь MongoDB-д хэрхэн хийхийг шууд
+              харьцуулж болно.
             </p>
           </div>
         </div>
@@ -147,9 +147,9 @@ export default function HomePage() {
           <div>
             <h3 className="text-sm font-medium text-[var(--text)]">Аюулгүй</h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[var(--text-dim)]">
-              Query нь browser-ийн sandbox дотор л ажиллана. Дата устгасан ч{' '}
-              <span className="font-mono">Дата сэргээх</span> товчоор анхны байдалд
-              буцаана.
+              Асуулга нь browser-ийн sandbox дотор л ажиллана. Мөр устгасан ч{' '}
+              <span className="font-mono">Өгөгдөл сэргээх</span> товчоор анхны
+              байдалд буцаана.
             </p>
           </div>
         </div>

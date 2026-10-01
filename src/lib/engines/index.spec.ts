@@ -262,7 +262,7 @@ describe('Engine интеграц', () => {
     // DROP
     const drop = await execute('postgres', 'DROP TABLE multi_dml')
     expect(drop.columns).toHaveLength(0)
-    expect(drop.notice).toContain('DROP')
+    expect(drop.notice).toMatch(/устлаа|устга|DROP/i)
   }, TIMEOUT)
 
   it('Postgres: QUIZ — олон statement-д хориглосон байвал унана', async () => {

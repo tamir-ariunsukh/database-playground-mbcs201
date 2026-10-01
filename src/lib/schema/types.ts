@@ -15,11 +15,11 @@ export interface DomainDefinition {
   description: string
   /** Хүснэгт үүсгэх SQL — PostgreSQL синтакс. */
   ddl: string
-  /** Seed дата үүсгэх SQL — INSERT statement-ууд. */
+  /** Жишээ өгөгдөл үүсгэх SQL — INSERT statement-ууд. */
   seed: string
-  /** Хичээлийн 15 query — Week 5-10-ийн сэдвүүдийг хамарна. */
+  /** Хичээлийн 15 асуулга — Week 5-10-ийн сэдвүүдийг хамарна. */
   examples: ExampleQuery[]
-  /** Challenge даалгаврууд. */
+  /** Даалгаврууд. */
   challenges: Challenge[]
 }
 
@@ -34,10 +34,10 @@ export interface ExampleQuery {
   /**
    * Жишээний ангилал — UI-д шүүлтүүр болгож хэрэглэнэ.
    *
-   *   ddl         — CREATE / ALTER / DROP TABLE, constraint
+   *   ddl         — CREATE / ALTER / DROP TABLE, хязгаар (constraint)
    *   dml         — INSERT / UPDATE / DELETE
-   *   query       — SELECT (WHERE, JOIN, aggregate, subquery)
-   *   transaction — BEGIN / COMMIT / ROLLBACK
+   *   query       — SELECT (WHERE, JOIN, нэгтгэх функц, дэд асуулга)
+   *   транзакц    — BEGIN / COMMIT / ROLLBACK
    *   view-index  — CREATE VIEW / CREATE INDEX / EXPLAIN
    *   normalization — 1NF / 2NF / 3NF, функциональ хамаарал
    *
@@ -45,8 +45,8 @@ export interface ExampleQuery {
    */
   category?: ExampleCategory
   /**
-   * Энэ жишээ нь датаг ӨӨРЧИЛНЭ (DDL/DML). UI-д сэрэмжлүүлэг
-   * харуулахын тулд. `true` бол "Дата сэргээх" товчийг сануулна.
+   * Энэ жишээ нь өгөгдлийг ӨӨРЧИЛНЭ (DDL/DML). UI-д сэрэмжлүүлэг
+   * харуулахын тулд. `true` бол «Өгөгдөл сэргээх» товчийг сануулна.
    */
   mutates?: boolean
   /**
@@ -78,10 +78,10 @@ export const CATEGORY_LABELS: Record<ExampleCategory, string> = {
 export const CATEGORY_DESCRIPTIONS: Record<ExampleCategory, string> = {
   ddl: 'CREATE, ALTER, DROP TABLE — хүснэгтийн бүтэц',
   dml: 'INSERT, UPDATE, DELETE — мөр нэмэх, засах, устгах',
-  query: 'SELECT — өгөгдөл унших (WHERE, JOIN, aggregate)',
+  query: 'SELECT — өгөгдөл унших (WHERE, JOIN, нэгтгэх функц)',
   transaction: 'BEGIN, COMMIT, ROLLBACK — ACID',
   'view-index': 'CREATE VIEW, CREATE INDEX, EXPLAIN',
-  normalization: '1NF, 2NF, 3NF — давхардал ба anomaly',
+  normalization: '1NF, 2NF, 3NF — давхардал ба гажиг (anomaly)',
 }
 
 export interface Challenge {

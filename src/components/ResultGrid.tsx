@@ -13,7 +13,7 @@ import { ArrowDown, ArrowUp, ChevronsUpDown, Download, Copy, Check } from 'lucid
 import type { DbKind, QueryResult } from '@/lib/types'
 
 /**
- * ResultGrid — query-гийн үр дүнг хүснэгт хэлбэрээр харуулна.
+ * ResultGrid — асуулгын үр дүнг хүснэгт хэлбэрээр харуулна.
  *
  * Боломжууд:
  *   - Багана тус бүрээр эрэмбэлэх (толгой дээр дарах)
@@ -82,7 +82,7 @@ export function ResultGrid({ result, dbKind = 'postgres' }: Props) {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `query-result-${Date.now()}.csv`
+    a.download = `asuulga-result-${Date.now()}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -208,7 +208,7 @@ export function ResultGrid({ result, dbKind = 'postgres' }: Props) {
 
         {result.rowCount === 0 && (
           <div className="p-8 text-center text-sm text-[var(--text-dim)]">
-            Query амжилттай ажилласан ч <span className="font-mono">0</span> мөр буцаалаа.
+            Асуулга амжилттай ажилласан ч <span className="font-mono">0</span> мөр буцаалаа.
             <br />
             <span className="text-xs">
               Нөхцөл (WHERE) хэт хатуу байж болзошгүй — сулруулж үзээрэй.

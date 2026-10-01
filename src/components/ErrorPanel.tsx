@@ -4,10 +4,10 @@ import { AlertCircle, Loader2 } from 'lucide-react'
 import type { QueryError } from '@/lib/types'
 
 /**
- * ErrorPanel — query-гийн алдааг ойлгомжтой харуулна.
+ * ErrorPanel — асуулгын алдааг ойлгомжтой харуулна.
  *
- * Postgres-ийн алдааны кодыг монгол зөвлөгөө болгон харуулна.
- * Хүүхэд "яагаад ажиллахгүй байна" гэдгийг ойлгох нь чухал.
+ * PostgreSQL-ийн алдааны кодыг монгол зөвлөгөө болгон харуулна.
+ * Оюутан «яагаад ажиллахгүй байна» гэдгийг ойлгох нь чухал.
  */
 export function ErrorPanel({
   error,
@@ -65,7 +65,7 @@ export function ErrorPanel({
         {query && lineInfo && (
           <div className="mt-3 overflow-hidden rounded border border-[var(--border)]">
             <div className="border-b border-[var(--border)] bg-[var(--bg-alt)] px-3 py-1.5 text-[10px] uppercase tracking-wide text-[var(--text-dim)]">
-              Таны query
+              Таны бичсэн асуулга
             </div>
             <pre className="overflow-auto bg-[var(--bg)] p-3 font-mono text-[11px] leading-relaxed">
               {query.split('\n').map((line, i) => (
@@ -93,7 +93,7 @@ export function ErrorPanel({
             onClick={() => onFix(query)}
             className="mt-3 rounded border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text-dim)] transition hover:bg-white/5 hover:text-[var(--text)]"
           >
-            Query-г засах
+            Асуулгыг засах
           </button>
         )}
       </div>
@@ -101,7 +101,7 @@ export function ErrorPanel({
   )
 }
 
-/** Query-гийн текстийг ашиглан алдааны байрлалыг мөр/багана болгоно. */
+/** Асуулгын текстийг ашиглан алдааны байрлалыг мөр/багана болгоно. */
 function positionToLine(sql: string, pos: number): { line: number; col: number } | null {
   if (!sql || pos < 1) return null
   const before = sql.slice(0, pos)

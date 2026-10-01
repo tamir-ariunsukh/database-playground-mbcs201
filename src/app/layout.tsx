@@ -5,7 +5,7 @@ import { DbProvider } from '@/components/DbProvider'
 export const metadata: Metadata = {
   title: 'Database Playground — MBCS201',
   description:
-    'PostgreSQL, MySQL, MongoDB гэсэн 3 өгөгдлийн сангийн query-г browser дотор ажиллуулж үзэх интерактив орчин.',
+    'PostgreSQL, MySQL, MongoDB гэсэн 3 өгөгдлийн сангийн асуулгыг browser дотор ажиллуулж үзэх интерактив орчин.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

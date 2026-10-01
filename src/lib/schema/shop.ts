@@ -78,7 +78,7 @@ function generateSeed(): string {
             : 'FALSE'
           : `'${String(s).replace(/'/g, "''")}'`
 
-  const out: string[] = ['-- Online Shop жишээ дата (seed: shop-v1)']
+  const out: string[] = ['-- Цахим дэлгүүрийн жишээ өгөгдөл (seed: shop-v1)']
 
   // categories (12) — 4 нь parent, 8 нь дэд ангилал
   const parents: [string, number | null][] = [
@@ -262,7 +262,7 @@ ORDER BY price;`,
   { name: 1, price: 1 }
 ).sort({ price: 1 })`,
       explanation:
-        'LIKE \'%цамц%\' нь хаана ч байсан "цамц" гэсэн хэсгийг хайна. Postgres-д `ILIKE` нь том/жижиг үсгийг ялгахгүй. MongoDB-д `$regex` + `$options: \'i\'`.',
+        'LIKE \'%цамц%\' нь хаана ч байсан "цамц" гэсэн хэсгийг хайна. PostgreSQL-д `ILIKE` нь том/жижиг үсгийг ялгахгүй. MongoDB-д `$regex` + `$options: \'i\'`.',
     },
     {
       title: 'Захиалгын нийт дүн ба мөрийн тоо',
@@ -300,7 +300,7 @@ GROUP BY p.product_id, p.name
 ORDER BY revenue DESC
 LIMIT 10;`,
       explanation:
-        'Гурван хүснэгтийн JOIN. `1 - oi.discount/100` нь хямдралыг тооцсон бодит үнэ. ⚠️ `NUMERIC` хуваалт бүхэл тоо болохгүй — Postgres-д зөв.',
+        'Гурван хүснэгтийн JOIN. `1 - oi.discount/100` нь хямдралыг тооцсон бодит үнэ. ⚠️ `NUMERIC` хуваалт бүхэл тоо болохгүй — PostgreSQL-д зөв.',
     },
     {
       title: 'Хэзээ ч захиалга хийгээгүй харилцагч',
@@ -311,10 +311,10 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id
 WHERE o.order_id IS NULL
 ORDER BY c.registered_on;`,
       explanation:
-        'LEFT JOIN + IS NULL = anti-join. Бодит бизнест "идэвхжүүлэх" кампанит ажилд ашиглана. Энэ query-г INNER JOIN-оор бичвэл үр дүн ХООСОН гарна — тэр нь алдаа.',
+        'LEFT JOIN + IS NULL = anti-join. Бодит бизнест "идэвхжүүлэх" кампанит ажилд ашиглана. Энэ асуулгыг INNER JOIN-оор бичвэл үр дүн ХООСОН гарна — тэр нь алдаа.',
     },
     {
-      title: 'Дундаж захиалгын дүнгээс их харилцагчид (subquery)',
+      title: 'Дундаж захиалгын дүнгээс их харилцагчид (дэд асуулга)',
       week: 10,
       sql: `SELECT c.first_name, c.last_name, o.total_amount
 FROM orders o
@@ -325,7 +325,7 @@ WHERE o.total_amount > (
 ORDER BY o.total_amount DESC
 LIMIT 15;`,
       explanation:
-        'Subquery нь нэг утга буцааж, гадаад query түүнтэй харьцуулна. Ижил query-г `HAVING AVG(...) OVER ()` window function-оор ч бичиж болно.',
+        'Дэд асуулга нь нэг утга буцааж, гадаад асуулга түүнтэй харьцуулна. Ижил асуулгыг `HAVING AVG(...) OVER ()` цонх функцээр ч бичиж болно.',
     },
     {
       title: 'Ангилал тус бүрийн борлуулалт',
@@ -341,7 +341,7 @@ GROUP BY cat.category_id, cat.name
 HAVING SUM(oi.quantity * oi.unit_price) > 5000000
 ORDER BY gross DESC;`,
       explanation:
-        '`COUNT(DISTINCT ...)` нь давхардлыг арилгана — нэг захиалгад нэг ангиллын 3 бүтээгдэхүүн байвал 1 гэж тоолно. HAVING нь aggregate-ийн үр дүнг шүүнэ.',
+        '`COUNT(DISTINCT ...)` нь давхардлыг арилгана — нэг захиалгад нэг ангиллын 3 бүтээгдэхүүн байвал 1 гэж тоолно. HAVING нь нэгтгэсэн утгыг шүүнэ.',
     },
     {
       title: 'Захиалгын дэлгэрэнгүй (олон JOIN)',
@@ -364,7 +364,7 @@ WHERE o.order_id = 42;`,
   { $unwind: "$items" }
 ])`,
       explanation:
-        'Дөрвөн хүснэгтийн JOIN. `||` нь Postgres-д string холбоно (MySQL-д `CONCAT()`). Нэг захиалгын бүх мөрийг харах нь "order details" хуудасны ард байдаг query.',
+        'Дөрвөн хүснэгтийн JOIN. `||` нь PostgreSQL-д string холбоно (MySQL-д `CONCAT()`). Нэг захиалгын бүх мөрийг харах нь "order details" хуудасны ард байдаг асуулга.',
     },
     {
       title: 'Сарын борлуулалтын чиг хандлага',
@@ -401,10 +401,10 @@ GROUP BY c.customer_id, c.first_name, c.last_name, c.loyalty_tier
 HAVING COUNT(*) >= 5
 ORDER BY lifetime_value DESC;`,
       explanation:
-        "'Lifetime value' — бодит CRM системд хамгийн чухал хэмжүүр. HAVING нь COUNT-ийг шүүнэ, ORDER BY нь aggregate-ийн үр дүнгээр эрэмбэлнэ.",
+        "'Lifetime value' — бодит CRM системд хамгийн чухал хэмжүүр. HAVING нь COUNT-ийг шүүнэ, ORDER BY нь нэгтгэсэн утгаар эрэмбэлнэ.",
     },
     {
-      title: 'Бүтээгдэхүүний ашиг (window function)',
+      title: 'Бүтээгдэхүүний ашиг (цонх функц)',
       week: 12,
       sql: `SELECT name, price, cost,
        ROUND(price - cost, 2) AS profit,
@@ -415,7 +415,7 @@ WHERE cost IS NOT NULL AND discontinued = FALSE
 ORDER BY profit DESC
 LIMIT 20;`,
       explanation:
-        '`RANK() OVER (ORDER BY ...)` нь window function — aggregate биш, мөр бүрд утга оноодог. Энэ нь Postgres-ийн хүчирхэг боломж, MySQL 8+ мөн дэмжинэ.',
+        '`RANK() OVER (ORDER BY ...)` нь цонх функц (window function) — нэгтгэх функц биш, мөр бүрд утга оноодог. Энэ нь PostgreSQL-ийн хүчирхэг боломж, MySQL 8+ мөн дэмжинэ.',
     },
     {
       title: 'Захиалгын нийт дүнг шалгах (integrity)',
@@ -429,10 +429,10 @@ GROUP BY o.order_id, o.total_amount, o.shipping_fee
 HAVING ABS(o.total_amount - (SUM(oi.quantity * oi.unit_price * (1 - oi.discount/100)) + o.shipping_fee)) > 100
 LIMIT 20;`,
       explanation:
-        'Денормализаци хийсэн `total_amount` багана нь бодит нийлбэртэй таарах ёстой. Энэ query нь зөрүүтэй мөрүүдийг олж, өгөгдлийн бүрэн бүтэн байдлыг шалгана.',
+        'Денормализаци хийсэн `total_amount` багана нь бодит нийлбэртэй таарах ёстой. Энэ асуулга нь зөрүүтэй мөрүүдийг олж, өгөгдлийн бүрэн бүтэн байдлыг шалгана.',
     },
     {
-      title: 'Transaction — захиалга үүсгэх',
+      title: 'Транзакц — захиалга үүсгэх',
       week: 13,
       category: 'transaction',
       mutates: true,
@@ -442,7 +442,7 @@ INSERT INTO orders (customer_id, order_date, status, shipping_city, shipping_fee
 VALUES (10, NOW(), 'Хүлээгдэж буй', 'Улаанбаатар', 8000, 0)
 RETURNING order_id;
 
--- Дараа нь order_items-д мөрүүдийг нэмнэ (order_id-г дээрх query-ээс авна)
+-- Дараа нь order_items-д мөрүүдийг нэмнэ (order_id-г дээрх асуулгаас авна)
 -- INSERT INTO order_items (order_id, product_id, quantity, unit_price)
 -- VALUES (<order_id>, 5, 2, 1500000);
 
@@ -467,10 +467,10 @@ FROM customers c
 ORDER BY spent DESC NULLS LAST
 LIMIT 10;`,
       explanation:
-        'Хоёр correlated subquery. Ижил үр дүнг LEFT JOIN + GROUP BY-ээр ч гаргаж болно — аль нь илүү уншигдахуйц вэ гэдэг нь чухал.',
+        'Хоёр корреляцитай дэд асуулга. Ижил үр дүнг LEFT JOIN + GROUP BY-ээр ч гаргаж болно — аль нь илүү уншигдахуйц вэ гэдэг нь чухал.',
     },
     {
-      title: 'CHECK constraint — буруу тайер',
+      title: 'CHECK хязгаар — буруу тайер',
       week: 4,
       category: 'ddl',
       mutates: true,

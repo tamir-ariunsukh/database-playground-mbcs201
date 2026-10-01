@@ -79,7 +79,7 @@ function generateSeed(): string {
             : 'FALSE'
           : `'${String(s).replace(/'/g, "''")}'`
 
-  const out: string[] = ['-- Hospital жишээ дата (seed: hospital-v1)']
+  const out: string[] = ['-- Эмнэлгийн жишээ өгөгдөл (seed: hospital-v1)']
 
   const departments: [string, number, string][] = [
     ['Дотор', 1, '7011-1111'],
@@ -268,7 +268,7 @@ FROM patients
 GROUP BY blood_type
 ORDER BY patients DESC;`,
       explanation:
-        'Subquery-г SELECT дотор ашиглаж нийт тоог гаргаад хувь бодно. `100.0` гэж бичих нь чухал — `100` гэвэл бүхэл тоон хуваалт болж 0 гарна.',
+        'Дэд асуулгыг SELECT дотор ашиглаж нийт тоог гаргаад хувь бодно. `100.0` гэж бичих нь чухал — `100` гэвэл бүхэл тоон хуваалт болж 0 гарна.',
     },
     {
       title: 'Ирээгүй цаг товлолтын хувь',
@@ -279,7 +279,7 @@ FROM appointments
 GROUP BY status
 ORDER BY count DESC;`,
       explanation:
-        '`SUM(COUNT(*)) OVER ()` — window function нь aggregate-ийн үр дүн дээр ажиллана. Энэ нь "нийт дүнгийн хэдэн хувь" бодох хамгийн цэвэр арга.',
+        '`SUM(COUNT(*)) OVER ()` — цонх функц нь нэгтгэсэн утгын дээр ажиллана. Энэ нь "нийт дүнгийн хэдэн хувь" бодох хамгийн цэвэр арга.',
     },
     {
       title: 'Дундаж цалингаас өндөр эмч',
@@ -290,7 +290,7 @@ JOIN departments dep ON d.department_id = dep.department_id
 WHERE d.salary > (SELECT AVG(salary) FROM doctors)
 ORDER BY d.salary DESC;`,
       explanation:
-        'Scalar subquery нэг утга буцаана. Ижил үр дүнг `WHERE salary > (SELECT ...)`-ийн оронд window function-оор ч гаргаж болно.',
+        'Скаляр дэд асуулга нэг утга буцаана. Ижил үр дүнг `WHERE salary > (SELECT ...)`-ийн оронд цонх функцээр ч гаргаж болно.',
     },
     {
       title: 'Тэнхимийн цалингийн статистик',
@@ -346,7 +346,7 @@ FROM appointments
 GROUP BY TO_CHAR(scheduled_at, 'YYYY-MM')
 ORDER BY month;`,
       explanation:
-        "`COUNT(*) FILTER (WHERE ...)` — Postgres-ийн гоёмсог боломж, нэг query-д олон нөхцөлт тоолол хийхэд. MySQL-д `SUM(CASE WHEN ... THEN 1 END)` гэж бичнэ.",
+        "`COUNT(*) FILTER (WHERE ...)` — PostgreSQL-ийн гоёмсог боломж, нэг асуулгад олон нөхцөлт тоолол хийхэд. MySQL-д `SUM(CASE WHEN ... THEN 1 END)` ашиглана.",
     },
     {
       title: 'Хамгийн түгээмэл оношилгоо',
@@ -384,7 +384,7 @@ GROUP BY patient_id, patient
 ORDER BY total_paid DESC
 LIMIT 10;`,
       explanation:
-        'VIEW нь нарийн query-г нууж, энгийн хүснэгт мэт ашиглах боломж өгнө. Мөн аюулгүй байдал — хэрэглэгчид зөвхөн view-г нээж, суурь хүснэгтэд хандахгүй байх боломжтой.',
+        'VIEW нь нарийн асуулгыг нууж, энгийн хүснэгт мэт ашиглах боломж өгнө. Мөн аюулгүй байдал — хэрэглэгчид зөвхөн view-г нээж, суурь хүснэгтэд хүрэхгүй байх боломжтой.',
     },
     {
       title: 'Хамгийн сүүлийн үзлэгийн оношилгоо (correlated)',
@@ -398,7 +398,7 @@ FROM patients p
 ORDER BY p.last_name
 LIMIT 15;`,
       explanation:
-        'Correlated subquery + ORDER BY + LIMIT 1 = "сүүлийн бичлэг". PostgreSQL-д `DISTINCT ON` эсвэл window function нь илүү үр дүнтэй хувилбар.',
+        'Корреляцитай дэд асуулга + ORDER BY + LIMIT 1 = "сүүлийн бичлэг". PostgreSQL-д `DISTINCT ON` эсвэл цонх функц нь илүү үр дүнтэй хувилбар.',
     },
     {
       title: 'Давхар товлолт (өгөгдлийн чанар шалгах)',
@@ -409,10 +409,10 @@ GROUP BY patient_id, scheduled_at
 HAVING COUNT(*) > 1
 ORDER BY duplicates DESC;`,
       explanation:
-        'Ижил өвчтөнд яг ижил цагт давхар товлолт байгаа эсэхийг шалгана. Ийм query нь өгөгдлийн чанарын шалгалтад (data quality audit) өдөр бүр ажилладаг.',
+        'Ижил өвчтөнд яг ижил цагт давхар товлолт байгаа эсэхийг шалгана. Ийм асуулга нь өгөгдлийн чанарын шалгалтад (data quality audit) өдөр бүр ажиллана.',
     },
     {
-      title: 'Transaction — цаг товлох',
+      title: 'Транзакц — цаг товлох',
       week: 13,
       category: 'transaction',
       mutates: true,

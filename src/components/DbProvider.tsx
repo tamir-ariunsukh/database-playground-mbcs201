@@ -25,10 +25,10 @@ import { QueryError } from '@/lib/types'
  * DbProvider — бүх UI-ийн төлөвийг удирдана.
  *
  * Ажиллагаа:
- *   1. Хэрэглэгч domain сонгоно → 3 engine-д ижил schema + дата бэлдэнэ
- *   2. Хэрэглэгч database сонгоно (Postgres / MySQL / MongoDB)
- *   3. Query бичиж ажиллуулна → үр дүн grid-д гарна
- *   4. Reset → дата анхны байдалд буцна
+ *   1. Хэрэглэгч төсөл сонгоно → 3 engine-д ижил схем + өгөгдөл бэлдэнэ
+ *   2. Хэрэглэгч өгөгдлийн сан сонгоно (PostgreSQL / MySQL / MongoDB)
+ *   3. Асуулга бичиж ажиллуулна → үр дүн хүснэгтэд гарна
+ *   4. Сэргээх → өгөгдөл анхны байдалд буцна
  *
  * Бүх зүйл client-side. Сервер рүү ямар ч хүсэлт явахгүй.
  */
@@ -150,8 +150,8 @@ export function DbProvider({ children }: { children: ReactNode }) {
    * engine-ийн ачааллыг зогсоохгүй. `loadDomain` нь өөрөө lock-той
    * (engines/index.ts), тиймээс давхар дуудалт аюулгүй.
    *
-   * Мөн `loadedDomainRef` нь ижил domain аль хэдийн ачаалагдсан бол
-   * дахин ачаалахгүй — ингэснээр дата дэмий устгагдахгүй.
+   * Мөн `loadedDomainRef` нь ижил төсөл аль хэдийн ачаалагдсан бол
+   * дахин ачаалахгүй — ингэснээр өгөгдөл дэмий устгагдахгүй.
    */
   const loadedDomainRef = useRef<string | null>(null)
 
@@ -237,10 +237,10 @@ export function DbProvider({ children }: { children: ReactNode }) {
 
   const refreshTables = useCallback(async () => {
     try {
-      // ⚠️ `loadDomain`-ийг ДАХИН дуудахгүй — тэр нь бүх датаг
+      // ⚠️ `loadDomain`-ийг ДАХИН дуудахгүй — тэр нь бүх өгөгдлийг
       // устгаж, seed-ийг дахин ачаална. Хэрэглэгч INSERT/UPDATE
       // хийсний дараа тэр өөрчлөлт устах ёсгүй.
-      // Зөвхөн schema-гийн мета өгөгдлийг (мөрийн тоо) шинэчилнэ.
+      // Зөвхөн схемийн мета өгөгдлийг (мөрийн тоо) шинэчилнэ.
       const tables = await getTableMeta()
       dispatch({ type: 'loaded', tables })
     } catch {
@@ -249,10 +249,10 @@ export function DbProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const reset = useCallback(async () => {
-    dispatch({ type: 'loading', message: 'Дата сэргээж байна...' })
+    dispatch({ type: 'loading', message: 'Өгөгдөл сэргээж байна...' })
     try {
       const snapshot = await resetCurrentDomain()
-      // Reset нь датаг бүрэн сэргээсэн — ref-д тэмдэглэнэ.
+      // Сэргээх нь өгөгдлийг бүрэн сэргээсэн — ref-д тэмдэглэнэ.
       loadedDomainRef.current = snapshot.domainId
       dispatch({ type: 'loaded', tables: snapshot.tables })
       dispatch({ type: 'clearResult' })

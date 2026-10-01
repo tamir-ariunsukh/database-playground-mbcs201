@@ -9,8 +9,8 @@ import { QueryError } from '../types'
  * PGlite — жинхэнэ PostgreSQL 17, WebAssembly-д компиляцлагдсан.
  *
  * Энэ нь дуураймал БИШ. `SELECT version()` нь үнэхээр
- * "PostgreSQL 17.x" гэж буцаана. Бүх constraint, transaction,
- * EXPLAIN ANALYZE, window function — бүгд жинхэнэ.
+ * "PostgreSQL 17.x" гэж буцаана. Бүх хязгаар, транзакц,
+ * EXPLAIN ANALYZE, цонх функц — бүгд жинхэнэ.
  *
  * Ажиллах орчин: browser-ийн WebAssembly sandbox, `mem://` in-memory FS.
  * Ямар ч сервер, файл систем, сүлжээнд хүрэх боломжгүй.
@@ -26,7 +26,7 @@ export async function getPGlite(): Promise<PGlite> {
 
   loading = (async () => {
     const { PGlite } = await import('@electric-sql/pglite')
-    // `memory://` — бүх дата RAM-д, browser табыг хаахад устна.
+    // `memory://` — бүх өгөгдөл RAM-д, browser табыг хаахад устна.
     const db = await PGlite.create({ dataDir: 'memory://' })
     instance = db
     return db
@@ -56,7 +56,7 @@ export async function runPostgres(
   if (!options.skipGuard) {
     const verdict = guardSql(sql)
     if (!verdict.allowed) {
-      throw new QueryError(verdict.reason ?? 'Query зөвшөөрөгдөхгүй.', 'postgres', {
+      throw new QueryError(verdict.reason ?? 'Асуулга зөвшөөрөгдөхгүй.', 'postgres', {
         hint: verdict.suggestion,
       })
     }
@@ -80,7 +80,7 @@ export async function runPostgres(
   const statements = splitStatements(sql)
 
   if (statements.length === 0) {
-    throw new QueryError('Query-д гүйцэтгэх statement байхгүй.', 'postgres')
+    throw new QueryError('Асуулгад гүйцэтгэх statement байхгүй.', 'postgres')
   }
 
   try {
@@ -101,22 +101,21 @@ export async function runPostgres(
 
     if (!lastSelect) {
       const durationMs = performance.now() - start
-      const affected = countAffected(statements)
       return {
         columns: [],
         rows: [],
         rowCount: 0,
         durationMs,
         truncated: false,
-        affectedRows: affected,
-        notice: describeMultiStatement(statements, affected),
+        affectedRows: countAffected(statements),
+        notice: describeMultiStatement(statements),
       }
     }
 
     const result = await runSingleStatement(db, lastSelect, start, limit)
     return {
       ...result,
-      notice: describeMultiStatement(statements, undefined),
+      notice: describeMultiStatement(statements),
     }
   } catch (err) {
     throw toQueryError(err, 'postgres')
@@ -164,7 +163,7 @@ async function runSingleStatement(
   /*
    * `truncated` нь ЗӨВХӨН бодитоор таслагдсан үед true байх ёстой.
    *
-   * Хэрэв query нь LIMIT 500-аас цөөн мөр буцаасан бол (жишээ нь
+   * Хэрэв асуулга LIMIT 500-аас цөөн мөр буцаасан бол (жишээ нь
    * `SELECT COUNT(*)` нь 1 мөр) "LIMIT нэмэгдлээ" гэсэн
    * анхааруулга харуулах нь ТӨӨРӨГДҮҮЛНЭ. Тиймээс мөрийн тоог
    * шалгана — LIMIT-тэй яг тэнцүү байвал л таслагдсан гэж үзнэ.
@@ -188,11 +187,8 @@ function countAffected(statements: string[]): number | undefined {
   return dml.length > 0 ? dml.length : undefined
 }
 
-/** Олон statement-ийн мэдэгдэл. */
-function describeMultiStatement(
-  statements: string[],
-  affected?: number,
-): string {
+/** Олон statement-ийн товч мэдэгдэл. */
+function describeMultiStatement(statements: string[]): string {
   const counts = {
     create: 0,
     drop: 0,
@@ -215,19 +211,18 @@ function describeMultiStatement(
   }
 
   const parts: string[] = []
-  if (counts.create) parts.push(`${counts.create} CREATE`)
-  if (counts.alter) parts.push(`${counts.alter} ALTER`)
-  if (counts.insert) parts.push(`${counts.insert} INSERT`)
-  if (counts.update) parts.push(`${counts.update} UPDATE`)
-  if (counts.delete) parts.push(`${counts.delete} DELETE`)
-  if (counts.drop) parts.push(`${counts.drop} DROP`)
-  if (counts.select) parts.push(`${counts.select} SELECT`)
+  if (counts.create) parts.push(`${counts.create} хүснэгт үүсгэх`)
+  if (counts.alter) parts.push(`${counts.alter} бүтэц өөрчлөх`)
+  if (counts.insert) parts.push(`${counts.insert} мөр нэмэх`)
+  if (counts.update) parts.push(`${counts.update} мөр шинэчлэх`)
+  if (counts.delete) parts.push(`${counts.delete} мөр устгах`)
+  if (counts.drop) parts.push(`${counts.drop} объект устгах`)
+  if (counts.select) parts.push(`${counts.select} унших`)
 
   const total = statements.length
-  const summary = parts.length > 0 ? parts.join(', ') : `${total} statement`
-  const affectedNote = affected !== undefined ? ` — ${affected} DML statement` : ''
+  const summary = parts.length > 0 ? parts.join(', ') : `${total} үйлдэл`
 
-  return `${total} statement амжилттай ажиллалаа: ${summary}${affectedNote}.`
+  return `${total} statement амжилттай ажиллалаа — ${summary}.`
 }
 
 /** Олон statement-ийг дараалан ажиллуулна (seed, DDL-д). */
@@ -498,20 +493,20 @@ function inferColumns(fields?: { name: string }[]): string[] {
   return fields?.map((f) => f.name) ?? []
 }
 
-/** Statement-ийн төрлийг тодорхойлж, хэрэглэгчид мэдэгдэл буцаана. */
+/** Statement-ийн төрлийг тодорхоолж, хэрэглэгчид мэдэгдэл буцаана. */
 function describeStatement(sql: string, affectedRows?: number): string | undefined {
   const s = sql.trim().toLowerCase()
-  if (s.startsWith('create table')) return 'CREATE TABLE — хүснэгт үүслээ.'
-  if (s.startsWith('create view')) return 'CREATE VIEW — view үүслээ.'
-  if (s.startsWith('create index')) return 'CREATE INDEX — index үүслээ.'
-  if (s.startsWith('insert')) return `INSERT — ${affectedRows ?? '?'} мөр нэмэгдлээ.`
-  if (s.startsWith('update')) return `UPDATE — ${affectedRows ?? '?'} мөр өөрчлөгдлөө.`
-  if (s.startsWith('delete')) return `DELETE — ${affectedRows ?? '?'} мөр устлаа.`
-  if (s.startsWith('drop')) return 'DROP — объект устлаа.'
-  if (s.startsWith('begin')) return 'BEGIN — transaction эхэллээ.'
-  if (s.startsWith('commit')) return 'COMMIT — өөрчлөлт хадгалагдлаа.'
-  if (s.startsWith('rollback')) return 'ROLLBACK — өөрчлөлт цуцлагдлаа.'
-  if (s.startsWith('alter')) return 'ALTER — бүтэц өөрчлөгдлөө.'
+  if (s.startsWith('create table')) return 'Хүснэгт үүслээ.'
+  if (s.startsWith('create view')) return 'VIEW үүслээ.'
+  if (s.startsWith('create index')) return 'INDEX үүслээ.'
+  if (s.startsWith('insert')) return `${affectedRows ?? '?'} мөр нэмэгдлээ.`
+  if (s.startsWith('update')) return `${affectedRows ?? '?'} мөр өөрчлөгдлөө.`
+  if (s.startsWith('delete')) return `${affectedRows ?? '?'} мөр устлаа.`
+  if (s.startsWith('drop')) return 'Объект устлаа.'
+  if (s.startsWith('begin')) return 'Транзакц эхэллээ.'
+  if (s.startsWith('commit')) return 'Өөрчлөлт хадгалагдлаа.'
+  if (s.startsWith('rollback')) return 'Өөрчлөлт цуцлагдлаа.'
+  if (s.startsWith('alter')) return 'Хүснэгтийн бүтэц өөрчлөгдлөө.'
   return undefined
 }
 
@@ -535,19 +530,20 @@ function toQueryError(err: unknown, dbKind: 'postgres' | 'mysql'): QueryError {
 /** Postgres-ийн түгээмэл алдааны кодыг монгол зөвлөгөө болгоно. */
 function translatePgHint(code?: string): string | undefined {
   const map: Record<string, string> = {
-    '42P01': 'Хүснэгтийн нэр зөв эсэхийг шалгаарай. Schema tab-аас хүснэгтүүдийг харна уу.',
+    '42P01':
+      'Хүснэгтийн нэр зөв эсэхийг шалгаарай. Зүүн самбараас хүснэгтүүдийг харна уу.',
     '42703': 'Баганын нэр зөв эсэхийг шалгаарай.',
-    '23505': 'UNIQUE constraint зөрчигдлөө — энэ утга аль хэдийн байна.',
-    '23503': 'FOREIGN KEY constraint зөрчигдлөө — холбоотой мөр байхгүй.',
-    '23514': 'CHECK constraint зөрчигдлөө — утга зөвшөөрөгдөх хязгаарт байхгүй.',
-    '23502': 'NOT NULL constraint зөрчигдлөө — заавал утга оруулах ёстой.',
+    '23505': 'UNIQUE хязгаар зөрчигдлөө — энэ утга аль хэдийн байна.',
+    '23503': 'FOREIGN KEY хязгаар зөрчигдлөө — холбоотой мөр байхгүй.',
+    '23514': 'CHECK хязгаар зөрчигдлөө — утга зөвшөөрөгдөх хязгаарт байхгүй.',
+    '23502': 'NOT NULL хязгаар зөрчигдлөө — заавал утга оруулах ёстой.',
     '42601': 'SQL синтакс алдаа. Хаалт, таслал, түлхүүр үгээ шалгаарай.',
     '42P07': 'Энэ нэртэй объект аль хэдийн байна.',
     '42701': 'Энэ багана аль хэдийн байна.',
     '22P02': 'Утгын төрөл буруу — жишээ нь тоо оруулах ёстой газар текст оруулсан.',
     '22007': 'Огнооны формат буруу. `YYYY-MM-DD` хэлбэр хэрэглээрэй.',
-    '40001': 'Serialization failure — дахин оролдоно уу.',
-    '25P02': 'Transaction аль хэдийн цуцлагдсан — ROLLBACK хийгээд дахин эхлээрэй.',
+    '40001': 'Дарааллын зөрчил (serialization failure) — дахин оролдоно уу.',
+    '25P02': 'Транзакц аль хэдийн цуцлагдсан — ROLLBACK хийгээд дахин эхлээрэй.',
   }
   return code ? map[code] : undefined
 }

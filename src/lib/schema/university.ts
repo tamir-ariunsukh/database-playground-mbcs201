@@ -78,7 +78,7 @@ function generateSeed(): string {
             : 'FALSE'
           : `'${String(s).replace(/'/g, "''")}'`
 
-  const out: string[] = ['-- University жишээ дата (seed: university-v1)']
+  const out: string[] = ['-- Их сургуулийн жишээ өгөгдөл (seed: university-v1)']
 
   const depts: [string, string, number][] = [
     ['Мэдээллийн технологи', 'A', 850000000],
@@ -332,7 +332,7 @@ LIMIT 10;`,
         '`FILTER (WHERE ...)` + HAVING-ийн хослол. `COUNT(*) >= 15` гэсэн нөхцөл нь цөөн оюутантай хичээлийг хасаж, статистик найдвартай байлгана.',
     },
     {
-      title: 'Дундажаас өндөр GPA-тай оюутан (subquery)',
+      title: 'Дундажаас өндөр GPA-тай оюутан (дэд асуулга)',
       week: 10,
       sql: `SELECT first_name, last_name, gpa
 FROM students
@@ -340,7 +340,7 @@ WHERE gpa > (SELECT AVG(gpa) FROM students WHERE is_active = TRUE)
   AND is_active = TRUE
 ORDER BY gpa DESC;`,
       explanation:
-        'Scalar subquery. Дундаж нь `is_active` оюутнуудаар л бодогдож байгааг анхаар — subquery доторх WHERE нь гадаад query-гээс тусдаа.',
+        'Скаляр дэд асуулга. Дундаж нь `is_active` оюутнуудаар л бодогдож байгааг анхаар — дэд асуулга доторх WHERE нь гадаад асуулгаас тусдаа.',
     },
     {
       title: 'Тэнхим бүрийн шилдэг оюутан',
@@ -354,7 +354,7 @@ WHERE s.gpa = (
 )
 ORDER BY s.gpa DESC;`,
       explanation:
-        'Correlated subquery — дотоод query нь гадаад query-гийн `s.department_id`-г ашиглаж байна. Ижил үр дүнг `RANK() OVER (PARTITION BY ...)` -аар илүү үр дүнтэй гаргаж болно.',
+        'Корреляцитай дэд асуулга — дотоод асуулга нь гадаад асуулгын `s.department_id`-г ашиглаж байна. Ижил үр дүнг `RANK() OVER (PARTITION BY ...)`-аар илүү үр дүнтэй гаргаж болно.',
     },
     {
       title: 'Хичээлийн улирлын ачаалал',
@@ -367,7 +367,7 @@ FROM enrollments e
 GROUP BY e.semester
 ORDER BY e.semester;`,
       explanation:
-        'Нэг query-д олон `COUNT(DISTINCT)` — оюутан, хичээл, нийт бүртгэлийг зэрэг харна. `COUNT(*)` нь хамгийн их утгатай байх ёстой.',
+        'Нэг асуулгад олон `COUNT(DISTINCT)` — оюутан, хичээл, нийт бүртгэлийг зэрэг харна. `COUNT(*)` нь хамгийн их утгатай байх ёстой.',
     },
     {
       title: 'Оюутан, хичээл, багш (олон JOIN)',
@@ -425,7 +425,7 @@ ORDER BY semester, course;`,
         'VIEW нь нарийн JOIN-г нууна. Оюутан бүрийн "transcript" хуудас ийм view дээр суурилдаг — дахин дахин JOIN бичих шаардлагагүй.',
     },
     {
-      title: 'Оюутны улирлын явц (window function)',
+      title: 'Оюутны улирлын явц (цонх функц)',
       week: 12,
       sql: `SELECT s.last_name, e.semester,
        ROUND(AVG(CASE e.grade WHEN 'A' THEN 4.0 WHEN 'B' THEN 3.0
@@ -438,7 +438,7 @@ WHERE e.grade IS NOT NULL AND s.student_id <= 20
 GROUP BY s.student_id, s.last_name, e.semester
 ORDER BY s.last_name, e.semester;`,
       explanation:
-        'Оюутан бүрийн улирал тус бүрийн GPA. Бодит их сургуулийн системд ийм query-г оюутны дэлгэрэнгүй хуудсанд ашигладаг.',
+        'Оюутан бүрийн улирал тус бүрийн GPA. Бодит их сургуулийн системд ийм асуулгыг оюутны дэлгэрэнгүй хуудсанд ашигладаг.',
     },
     {
       title: 'Хичээлийн шаардлага шалгах (capacity)',
@@ -452,10 +452,10 @@ GROUP BY c.course_id, c.code, c.title, c.capacity
 HAVING COUNT(e.student_id) >= c.capacity
 ORDER BY seats_left;`,
       explanation:
-        'Capacity-г хэтрүүлсэн хичээлүүдийг олно. `HAVING COUNT(...) >= c.capacity` нь aggregate болон энгийн баганыг хослуулсан — энэ нь зөвхөн GROUP BY-д орсон баганад л боломжтой.',
+        'Capacity-г хэтрүүлсэн хичээлүүдийг олно. `HAVING COUNT(...) >= c.capacity` нь нэгтгэсэн утга болон энгийн баганыг хослуулсан — GROUP BY-д орсон баганад л боломжтой.',
     },
     {
-      title: 'CHECK constraint — буруу дүн',
+      title: 'CHECK хязгаар — буруу дүн',
       week: 4,
       category: 'ddl',
       mutates: true,

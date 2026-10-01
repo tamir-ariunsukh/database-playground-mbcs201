@@ -26,8 +26,8 @@ import {
  * ExamplePanel — баруун талын самбар.
  *
  * Хоёр табтай:
- *   1. Жишээ — ангилалаар шүүж болох query-нүүд, тайлбартай
- *   2. Дасгал — challenge-ууд, шалгах боломжтой
+ *   1. Жишээ — ангилалаар шүүж болох асуулгууд, тайлбартай
+ *   2. Даалгавар — өөрийгөө шалгах бодлогууд
  *
  * Жишээ дээр дарахад editor-т орж, тэр даруй ажиллуулж болно.
  */
@@ -71,7 +71,7 @@ export function ExamplePanel({ onInsertQuery }: { onInsertQuery: (q: string) => 
         </TabButton>
         <TabButton active={tab === 'challenges'} onClick={() => setTab('challenges')}>
           <Target size={13} />
-          Дасгал ({domain.challenges.length})
+          Даалгавар ({domain.challenges.length})
         </TabButton>
       </div>
 
@@ -224,7 +224,7 @@ function ExampleList({
                     <AlertTriangle
                       size={10}
                       className="shrink-0 text-amber-400"
-                      aria-label="Датаг өөрчилнө"
+                      aria-label="Өгөгдлийг өөрчилнө"
                     />
                   )}
                 </span>
@@ -247,8 +247,8 @@ function ExampleList({
                 {ex.mutates && (
                   <p className="mb-2 flex gap-1.5 rounded border border-amber-500/25 bg-amber-500/5 px-2 py-1.5 text-[10px] leading-relaxed text-amber-300/90">
                     <AlertTriangle size={11} className="mt-0.5 shrink-0" />
-                    Энэ query нь датаг өөрчилнө. Анхны байдалд буцаах бол зүүн
-                    доод буланд «Дата сэргээх» дарна уу.
+                    Энэ асуулга өгөгдлийг өөрчилнө. Анхны байдалд буцаах бол зүүн
+                    доод буланд «Өгөгдөл сэргээх» дарна уу.
                   </p>
                 )}
 
@@ -259,7 +259,7 @@ function ExampleList({
                 {isMongo && !ex.mongo && (
                   <p className="mb-2 rounded border border-amber-500/20 bg-amber-500/5 px-2 py-1.5 text-[10px] text-amber-300/90">
                     Энэ жишээнд MongoDB хувилбар байхгүй — SQL-ийг pipeline болгон
-                    хөрвүүлэх дасгал өөрөө хийгээрэй.
+                    хөрвүүлэх даалгаврыг өөрөө хийгээрэй.
                   </p>
                 )}
 
@@ -290,12 +290,12 @@ function ChallengeList({ onInsertQuery }: { onInsertQuery: (q: string) => void }
   const [openIdx, setOpenIdx] = useState<number | null>(null)
   const [showSolution, setShowSolution] = useState<Record<string, boolean>>({})
 
-  // Хамгийн сүүлийн query-гийн үр дүнгээр дасгалыг шалгана.
+  // Хамгийн сүүлийн асуулгын үр дүнгээр даалгаврыг шалгана.
   const verdict = useMemo(() => {
     if (openIdx === null) return null
     const ch = domain.challenges[openIdx]
     if (!ch) return null
-    if (queryError) return { ok: false, msg: 'Query алдаатай байна.' }
+    if (queryError) return { ok: false, msg: 'Асуулга алдаатай байна.' }
     if (!result) return null
 
     if (ch.expectedRowCount !== undefined && result.rowCount !== ch.expectedRowCount) {
@@ -454,7 +454,7 @@ function ChallengeItem({
   )
 }
 
-/** Дасгалын эхлэлийн template — хүснэгтийн нэрийг санал болгоно. */
+/** Даалгаврын эхлэлийн загвар — хүснэгтийн нэрийг санал болгоно. */
 function templateQuery(ch: Challenge): string {
   if (ch.solution.toUpperCase().startsWith('SELECT')) {
     return 'SELECT \nFROM \nWHERE \n'

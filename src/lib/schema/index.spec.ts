@@ -126,9 +126,9 @@ describe('Хичээлийн шаардлага хангасан эсэх', () =
     expect(withMongo.length).toBeGreaterThanOrEqual(5)
   })
 
-  it('CHECK constraint-ийн жишээ байна', () => {
+  it('CHECK хязгаарын жишээ байна', () => {
     const hasCheck = DOMAINS.some((d) =>
-      d.examples.some((e) => /CHECK constraint/i.test(e.explanation)),
+      d.examples.some((e) => /CHECK хязгаар/i.test(e.explanation)),
     )
     expect(hasCheck).toBe(true)
   })

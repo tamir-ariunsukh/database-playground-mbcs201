@@ -15,9 +15,9 @@ import type { DbKind } from '@/lib/types'
  * Playground — үндсэн ажлын талбар.
  *
  * Гурван баганат бүтэц:
- *   Зүүн:   Schema explorer (domain, database, хүснэгтүүд)
- *   Гол:    Query editor + үр дүнгийн grid
- *   Баруун: Жишээ болон дасгалууд
+ *   Зүүн:   Схем хайгч (төсөл, өгөгдлийн сан, хүснэгтүүд)
+ *   Гол:    Асуулгын редактор + үр дүнгийн хүснэгт
+ *   Баруун: Жишээ болон даалгаврууд
  *
  * Энэ бол JupyterLab эсвэл DBeaver-ийн browser хувилбар.
  */
@@ -133,7 +133,7 @@ export function Playground() {
                 ? 'bg-white/10 text-[var(--text)]'
                 : 'text-[var(--text-dim)] hover:bg-white/5 hover:text-[var(--text)]',
             )}
-            title="Query-ний түүх"
+            title="Асуулгын түүх"
           >
             <History size={13} />
             Түүх
@@ -223,10 +223,10 @@ function EmptyState() {
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/5">
           <Database size={20} className="text-[var(--text-dim)]" />
         </div>
-        <p className="text-sm text-[var(--text)]">Query бичээд Enter дарна уу</p>
+        <p className="text-sm text-[var(--text)]">Асуулга бичээд Enter дарна уу</p>
         <p className="mt-2 text-xs leading-relaxed text-[var(--text-dim)]">
           <span className="font-mono">Ctrl</span> +{' '}
-          <span className="font-mono">Enter</span> — бүх query
+          <span className="font-mono">Enter</span> — бүх асуулга
           <br />
           Текст сонгоод <span className="font-mono">Ctrl</span> +{' '}
           <span className="font-mono">Enter</span> — зөвхөн сонгосон хэсэг
@@ -254,12 +254,12 @@ function HistoryPanel({
       className="flex h-full shrink-0 flex-col border-l border-[var(--border)] bg-[var(--bg-alt)]"
     >
       <div className="border-b border-[var(--border)] px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-[var(--text-dim)]">
-        Query-ний түүх ({history.length})
+        Асуулгын түүх ({history.length})
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         {history.length === 0 && (
           <p className="p-4 text-xs leading-relaxed text-[var(--text-dim)]">
-            Одоохондоо түүх байхгүй. Query ажиллуулсны дараа энд харагдана.
+            Одоохондоо түүх байхгүй. Асуулга ажиллуулсны дараа энд харагдана.
           </p>
         )}
         {history.map((h) => (

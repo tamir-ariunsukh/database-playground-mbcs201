@@ -10,7 +10,7 @@ import { hotelDomain } from './hotel'
  * Бүх domain-ууд — MBCS201 хичээлийн Mini Project сэдвүүд.
  *
  * Эдгээрийн аль нэгийг сонгоход 3 системд (PostgreSQL, MySQL, MongoDB)
- * ижил schema + ижил дата бэлдэгдэнэ.
+ * ижил schema + ижил өгөгдөл бэлдэгдэнэ.
  */
 export const DOMAINS: DomainDefinition[] = [
   libraryDomain,

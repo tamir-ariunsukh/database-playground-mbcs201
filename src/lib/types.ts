@@ -6,7 +6,7 @@ export type DbKind = 'postgres' | 'mysql' | 'mongodb'
 
 export type CellValue = string | number | boolean | null | object | unknown[]
 
-/** Query-гийн үр дүн — бүх engine ижил хэлбэрээр буцаана. */
+/** Асуулгын үр дүн — бүх engine ижил хэлбэрээр буцаана. */
 export interface QueryResult {
   /** Баганын нэрс (MongoDB-д талбарын зам). */
   columns: string[]
@@ -24,7 +24,7 @@ export interface QueryResult {
   notice?: string
 }
 
-/** Query алдаа — engine-ээс хамаарахгүй нэгдсэн хэлбэр. */
+/** Асуулгын алдаа — engine-ээс хамаарахгүй нэгдсэн хэлбэр. */
 export class QueryError extends Error {
   readonly dbKind: DbKind
   readonly detail?: string
@@ -74,7 +74,7 @@ export interface SchemaMeta {
 
 export type DomainId = 'library' | 'shop' | 'hospital' | 'university' | 'hotel'
 
-/** Хэрэглэгчийн query-г engine-д дамжуулахын өмнөх шалгалтын хариу. */
+/** Хэрэглэгчийн асуулгыг engine-д дамжуулахын өмнөх шалгалтын хариу. */
 export interface GuardVerdict {
   allowed: boolean
   /** Зөвшөөрөгдөөгүй бол шалтгаан (монголоор). */

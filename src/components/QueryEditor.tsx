@@ -11,18 +11,18 @@ import type { DbKind } from '@/lib/types'
 import { useDb } from './DbProvider'
 
 /**
- * QueryEditor — CodeMirror 6 дээр суурилсан SQL/Mongo editor.
+ * QueryEditor — CodeMirror 6 дээр суурилсан SQL/Mongo редактор.
  *
  * Гол боломжууд:
- *   - Ctrl/Cmd + Enter → query ажиллуулах (бүх IDE-ийн стандарт)
+ *   - Ctrl/Cmd + Enter → асуулга ажиллуулах (бүх IDE-ийн стандарт)
  *   - Сонгосон хэсгийг л ажиллуулах (текст сонгосон бол)
- *   - Database-ээс хамаарч syntax highlight солигдоно
- *   - Schema-аас багана/хүснэгтийн нэрсийн autocomplete
+ *   - Өгөгдлийн сангаас хамаарч дүрмийн өнгө солигдоно
+ *   - Схемээс багана/хүснэгтийн нэрсийн автомат нөхөлт
  *
  * Чухал техникийн шийдэл:
  *   Ctrl+Enter-ийг DOM listener биш, CodeMirror-ийн `domEventHandlers`
  *   extension-ээр бүртгэнэ. DOM listener нь React-ийн ref timing болон
- *   `key` солигдох үед алдагдаж, "query ажиллахгүй байна" гэсэн
+ *   `key` солигдох үед алдагдаж, «асуулга ажиллахгүй байна» гэсэн
  *   төөрөгдөл үүсгэдэг. Extension нь editor state-ийн нэг хэсэг тул
  *   ямар ч тохиолдолд зөв ажиллана.
  */
