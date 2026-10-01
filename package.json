@@ -2,6 +2,7 @@
   "name": "database-playground-mbcs201",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.22.0",
   "description": "Browser-only database playground for MBCS201 — PostgreSQL, MySQL, MongoDB side by side",
   "sideEffects": [
     "src/lib/engines/mingo.ts",
